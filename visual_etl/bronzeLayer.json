@@ -1,0 +1,700 @@
+{
+	"jobConfig": {
+		"name": "bronzeLayer",
+		"description": "",
+		"role": "arn:aws:iam::979437020390:role/glue_projectRole",
+		"command": "glueetl",
+		"version": "5.0",
+		"runtime": null,
+		"workerType": "G.1X",
+		"numberOfWorkers": 2,
+		"maxCapacity": 2,
+		"jobRunQueuingEnabled": false,
+		"maxRetries": 0,
+		"timeout": 480,
+		"maxConcurrentRuns": 1,
+		"security": "none",
+		"scriptName": "bronzeLayer.py",
+		"scriptLocation": "s3://aws-glue-assets-979437020390-us-east-1/scripts/",
+		"language": "python-3",
+		"spark": true,
+		"sparkConfiguration": "standard",
+		"jobParameters": [
+			{
+				"key": "--conf",
+				"value": "spark.eventLog.rolling.enabled=true",
+				"existing": false
+			}
+		],
+		"tags": [],
+		"jobMode": "VISUAL_MODE",
+		"createdOn": "2026-03-07T18:15:55.621Z",
+		"developerMode": false,
+		"connectionsList": [],
+		"temporaryDirectory": "s3://aws-glue-assets-979437020390-us-east-1/temporary/",
+		"glueHiveMetastore": true,
+		"etlAutoTuning": true,
+		"metrics": true,
+		"observabilityMetrics": true,
+		"bookmark": "job-bookmark-enable",
+		"sparkPath": "s3://aws-glue-assets-979437020390-us-east-1/sparkHistoryLogs/",
+		"flexExecution": false,
+		"minFlexWorkers": null,
+		"maintenanceWindow": null,
+		"pythonPath": "",
+		"dependentPath": "",
+		"additionalPythonModules": ""
+	},
+	"dag": {
+		"node-1772906938214": {
+			"nodeId": "node-1772906938214",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1772906448573"
+			],
+			"name": "S3 COUNTRIES",
+			"generatedNodeName": "S3COUNTRIES_node1772906938214",
+			"classification": "DataSink",
+			"type": "S3",
+			"streamingBatchInterval": 100,
+			"format": "glueparquet",
+			"compression": "snappy",
+			"numberTargetPartitions": "0",
+			"path": "s3://project-glue-uk/bronze_data/countries_bronze/",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": false,
+				"updateBehavior": null,
+				"database": null,
+				"table": null
+			},
+			"updateCatalogOptions": "none",
+			"autoDataQuality": {
+				"isEnabled": false,
+				"evaluationContext": "EvaluateDataQuality_node1772906435148"
+			},
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1772906448996": {
+			"nodeId": "node-1772906448996",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "Category_Source",
+			"generatedNodeName": "Category_Source_node1772906448996",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://project-glue-uk/source_data/category/"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://project-glue-uk/source_data/category/netflix_category.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "listed_in",
+						"fullPath": [
+							"listed_in"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "show_id",
+						"fullPath": [
+							"show_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1772907040930": {
+			"nodeId": "node-1772907040930",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1772906448996"
+			],
+			"name": "S3 Category",
+			"generatedNodeName": "S3Category_node1772907040930",
+			"classification": "DataSink",
+			"type": "S3",
+			"streamingBatchInterval": 100,
+			"format": "glueparquet",
+			"compression": "snappy",
+			"numberTargetPartitions": "0",
+			"path": "s3://project-glue-uk/bronze_data/category_bronze/",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": false,
+				"updateBehavior": null,
+				"database": null,
+				"table": null
+			},
+			"updateCatalogOptions": "none",
+			"autoDataQuality": {
+				"isEnabled": false,
+				"evaluationContext": "EvaluateDataQuality_node1772906435148"
+			},
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1772907085763": {
+			"nodeId": "node-1772907085763",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1772906449370"
+			],
+			"name": "S3 Titles",
+			"generatedNodeName": "S3Titles_node1772907085763",
+			"classification": "DataSink",
+			"type": "S3",
+			"streamingBatchInterval": 100,
+			"format": "glueparquet",
+			"compression": "snappy",
+			"numberTargetPartitions": "0",
+			"path": "s3://project-glue-uk/bronze_data/titles_bronze/",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": false,
+				"updateBehavior": null,
+				"database": null,
+				"table": null
+			},
+			"updateCatalogOptions": "none",
+			"autoDataQuality": {
+				"isEnabled": false,
+				"evaluationContext": "EvaluateDataQuality_node1772906435148"
+			},
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1772907127848": {
+			"nodeId": "node-1772907127848",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1772906449948"
+			],
+			"name": "S3 Director",
+			"generatedNodeName": "S3Director_node1772907127848",
+			"classification": "DataSink",
+			"type": "S3",
+			"streamingBatchInterval": 100,
+			"format": "glueparquet",
+			"compression": "snappy",
+			"numberTargetPartitions": "0",
+			"path": "s3://project-glue-uk/bronze_data/directors_bronze/",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": false,
+				"updateBehavior": null,
+				"database": null,
+				"table": null
+			},
+			"updateCatalogOptions": "none",
+			"autoDataQuality": {
+				"isEnabled": false,
+				"evaluationContext": "EvaluateDataQuality_node1772906435148"
+			},
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1772907123515": {
+			"nodeId": "node-1772907123515",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1772906449948"
+			],
+			"name": "Director Catalog",
+			"generatedNodeName": "DirectorCatalog_node1772907123515",
+			"classification": "DataSink",
+			"type": "Catalog",
+			"streamingBatchInterval": 100,
+			"database": "glue_project",
+			"table": "directors",
+			"format": "json",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": true,
+				"updateBehavior": "UPDATE_IN_DATABASE"
+			},
+			"updateCatalogOptions": "schemaAndPartitions",
+			"calculatedType": "S3CatalogDataSink",
+			"runtimeParameters": [],
+			"codeGenVersion": 2
+		},
+		"node-1772906665299": {
+			"nodeId": "node-1772906665299",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1772906447522"
+			],
+			"name": "CAST CATALOG",
+			"generatedNodeName": "CASTCATALOG_node1772906665299",
+			"classification": "DataSink",
+			"type": "Catalog",
+			"streamingBatchInterval": 100,
+			"database": "glue_project",
+			"table": "cast",
+			"format": "json",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": true,
+				"updateBehavior": "UPDATE_IN_DATABASE"
+			},
+			"updateCatalogOptions": "schemaAndPartitions",
+			"calculatedType": "S3CatalogDataSink",
+			"runtimeParameters": [],
+			"codeGenVersion": 2
+		},
+		"node-1772906449948": {
+			"nodeId": "node-1772906449948",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "Directors_Source",
+			"generatedNodeName": "Directors_Source_node1772906449948",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://project-glue-uk/source_data/directors/"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://project-glue-uk/source_data/directors/netflix_directors.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "director",
+						"fullPath": [
+							"director"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "show_id",
+						"fullPath": [
+							"show_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1772907036684": {
+			"nodeId": "node-1772907036684",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1772906448996"
+			],
+			"name": "Category Catalog",
+			"generatedNodeName": "CategoryCatalog_node1772907036684",
+			"classification": "DataSink",
+			"type": "Catalog",
+			"streamingBatchInterval": 100,
+			"database": "glue_project",
+			"table": "category",
+			"format": "json",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": true,
+				"updateBehavior": "UPDATE_IN_DATABASE"
+			},
+			"updateCatalogOptions": "schemaAndPartitions",
+			"calculatedType": "S3CatalogDataSink",
+			"runtimeParameters": [],
+			"codeGenVersion": 2
+		},
+		"node-1772907010830": {
+			"nodeId": "node-1772907010830",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1772906448573"
+			],
+			"name": "COUNTRIES Catalog",
+			"generatedNodeName": "COUNTRIESCatalog_node1772907010830",
+			"classification": "DataSink",
+			"type": "Catalog",
+			"streamingBatchInterval": 100,
+			"database": "glue_project",
+			"table": "countries",
+			"format": "json",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": true,
+				"updateBehavior": "UPDATE_IN_DATABASE"
+			},
+			"updateCatalogOptions": "schemaAndPartitions",
+			"calculatedType": "S3CatalogDataSink",
+			"runtimeParameters": [],
+			"codeGenVersion": 2
+		},
+		"node-1772906449370": {
+			"nodeId": "node-1772906449370",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "Titles_Source",
+			"generatedNodeName": "Titles_Source_node1772906449370",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://project-glue-uk/source_data/titles/"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://project-glue-uk/source_data/titles/netflix_titles.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "duration_minutes",
+						"fullPath": [
+							"duration_minutes"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "duration_seasons",
+						"fullPath": [
+							"duration_seasons"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "type",
+						"fullPath": [
+							"type"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "title",
+						"fullPath": [
+							"title"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "date_added",
+						"fullPath": [
+							"date_added"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "release_year",
+						"fullPath": [
+							"release_year"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "rating",
+						"fullPath": [
+							"rating"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "description",
+						"fullPath": [
+							"description"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "show_id",
+						"fullPath": [
+							"show_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1772906657215": {
+			"nodeId": "node-1772906657215",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1772906447522"
+			],
+			"name": "Amazon S3 CAST",
+			"generatedNodeName": "AmazonS3CAST_node1772906657215",
+			"classification": "DataSink",
+			"type": "S3",
+			"streamingBatchInterval": 100,
+			"format": "glueparquet",
+			"compression": "snappy",
+			"numberTargetPartitions": "0",
+			"path": "s3://project-glue-uk/bronze_data/cast_bronze/",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": false,
+				"updateBehavior": null,
+				"database": null,
+				"table": null
+			},
+			"updateCatalogOptions": "none",
+			"autoDataQuality": {
+				"isEnabled": false,
+				"evaluationContext": "EvaluateDataQuality_node1772906435148"
+			},
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1772906448573": {
+			"nodeId": "node-1772906448573",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "Countries_Source",
+			"generatedNodeName": "Countries_Source_node1772906448573",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://project-glue-uk/source_data/countries/"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://project-glue-uk/source_data/countries/netflix_countries.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "country",
+						"fullPath": [
+							"country"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "show_id",
+						"fullPath": [
+							"show_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		},
+		"node-1772907082725": {
+			"nodeId": "node-1772907082725",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [
+				"node-1772906449370"
+			],
+			"name": "Titles Catalog",
+			"generatedNodeName": "TitlesCatalog_node1772907082725",
+			"classification": "DataSink",
+			"type": "Catalog",
+			"streamingBatchInterval": 100,
+			"database": "glue_project",
+			"table": "titles",
+			"format": "json",
+			"partitionKeys": [],
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": true,
+				"updateBehavior": "UPDATE_IN_DATABASE"
+			},
+			"updateCatalogOptions": "schemaAndPartitions",
+			"calculatedType": "S3CatalogDataSink",
+			"runtimeParameters": [],
+			"codeGenVersion": 2
+		},
+		"node-1772906447522": {
+			"nodeId": "node-1772906447522",
+			"dataPreview": false,
+			"previewAmount": 0,
+			"inputs": [],
+			"name": "Cast_Source",
+			"generatedNodeName": "Cast_Source_node1772906447522",
+			"classification": "DataSource",
+			"type": "S3",
+			"isCatalog": false,
+			"format": "csv",
+			"paths": [
+				"s3://project-glue-uk/source_data/cast/"
+			],
+			"compressionType": null,
+			"exclusions": [],
+			"groupFiles": null,
+			"groupSize": null,
+			"recurse": true,
+			"maxBand": null,
+			"maxFilesInBand": null,
+			"additionalOptions": {
+				"boundedSize": null,
+				"boundedFiles": null,
+				"enableSamplePath": false,
+				"samplePath": "s3://project-glue-uk/source_data/cast/netflix_cast.csv",
+				"boundedOption": null
+			},
+			"separator": ",",
+			"escaper": "",
+			"quoteChar": "\"",
+			"multiline": null,
+			"withHeader": true,
+			"writeHeader": null,
+			"skipFirst": null,
+			"optimizePerformance": false,
+			"outputSchemas": [
+				[
+					{
+						"key": "cast",
+						"fullPath": [
+							"cast"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					},
+					{
+						"key": "show_id",
+						"fullPath": [
+							"show_id"
+						],
+						"type": "string",
+						"glueStudioType": null,
+						"children": null
+					}
+				]
+			],
+			"calculatedType": "",
+			"codeGenVersion": 2
+		}
+	},
+	"hasBeenSaved": false,
+	"usageProfileName": null
+}

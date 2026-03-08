@@ -1,0 +1,58 @@
+{
+	"jobConfig": {
+		"name": "OBT gold",
+		"description": "",
+		"role": "arn:aws:iam::979437020390:role/glue_projectRole",
+		"command": "glueetl",
+		"version": "5.0",
+		"runtime": null,
+		"workerType": "G.1X",
+		"numberOfWorkers": 10,
+		"maxCapacity": 10,
+		"jobRunQueuingEnabled": false,
+		"maxRetries": 0,
+		"timeout": 480,
+		"maxConcurrentRuns": 1,
+		"security": "none",
+		"scriptName": "OBT gold.py",
+		"scriptLocation": "s3://aws-glue-assets-979437020390-us-east-1/scripts/",
+		"language": "python-3",
+		"spark": true,
+		"sparkConfiguration": "standard",
+		"jobParameters": [
+			{
+				"key": "--Input_Path",
+				"value": "s3://project-glue-uk/silver_data",
+				"existing": false
+			},
+			{
+				"key": "--Output_Path",
+				"value": "s3://project-glue-uk/gold_data/goldOBT/",
+				"existing": false
+			},
+			{
+				"key": "--conf",
+				"value": "spark.eventLog.rolling.enabled=true",
+				"existing": false
+			}
+		],
+		"tags": [],
+		"jobMode": "DEVELOPER_MODE",
+		"createdOn": "2026-03-08T01:01:13.492Z",
+		"developerMode": true,
+		"connectionsList": [],
+		"temporaryDirectory": "s3://aws-glue-assets-979437020390-us-east-1/temporary/",
+		"glueHiveMetastore": true,
+		"etlAutoTuning": true,
+		"metrics": true,
+		"observabilityMetrics": true,
+		"bookmark": "job-bookmark-disable",
+		"sparkPath": "s3://aws-glue-assets-979437020390-us-east-1/sparkHistoryLogs/",
+		"flexExecution": false,
+		"minFlexWorkers": null,
+		"maintenanceWindow": null
+	},
+	"hasBeenSaved": false,
+	"usageProfileName": null,
+	"script": "import sys\nfrom awsglue.transforms import *\nfrom awsglue.utils import getResolvedOptions\nfrom pyspark.context import SparkContext\nfrom awsglue.context import GlueContext\nfrom awsglue.job import Job\n\n## @params: [JOB_NAME]\nargs = getResolvedOptions(sys.argv, ['JOB_NAME','Input_Path','Output_Path'])\n\nsc = SparkContext()\nglueContext = GlueContext(sc)\nspark = glueContext.spark_session\njob = Job(glueContext)\njob.init(args['JOB_NAME'], args)\n\n# Extracting the Path URL\ninput_url=args['Input_Path']\ndestination_url=args['Output_Path']\n\nfrom pyspark.sql.functions import *\n# Creating the OBT\n\n# Reading the Silver Files\ncast_df = spark.read.parquet(f\"{input_url}/cast_silver/\")\ncategory_df = spark.read.parquet(f\"{input_url}/category_silver/\")\ncountry_df = spark.read.parquet(f\"{input_url}/countries_silver/\")\ndirector_df = spark.read.parquet(f\"{input_url}/directors_silver/\")\ntitle_df = spark.read.parquet(f\"{input_url}/titles_silver/\")\n\n\ndf_joined = title_df.alias(\"title\")\\\n              .join(cast_df.alias(\"cast\"), col(\"title.show_id\") == col(\"cast.show_id\"), \"left\")\\\n              .join(category_df.alias(\"category\"), col(\"title.show_id\") == col(\"category.show_id\"), \"left\")\\\n              .join(country_df.alias(\"country\"), col(\"title.show_id\") == col(\"country.show_id\"), \"left\")\\\n              .join(director_df.alias(\"director\"), col(\"title.show_id\") == col(\"director.show_id\"), \"left\")\n              \n\n# Selecting the columns for OBT\ndf_final = df_joined.select(\n    col(\"title.show_id\"),\n    col(\"title.duration_minutes\"),\n    col(\"title.duration_seasons\"),\n    col(\"title.type\"),\n    col(\"title.title\"),\n    col(\"title.date_added\"),\n    col(\"title.release_year\"),\n    col(\"title.rating\"),\n    col(\"title.description\"),\n    col(\"title.ShortTitle\"),\n    col(\"title.flag_id\"),\n    col(\"title.duration_ranking\"),\n    col(\"cast.cast_name\"),\n    col(\"cast.First_name\"),\n    col(\"category.listed_in\"),\n    col(\"category.isTV\"),\n    col(\"country.country\"),\n    col(\"director.director\"),\n    col(\"director.Director_FirstName\"),\n    col(\"director.Director_LastName\")\n)\n\n# Saving the Data\ndf_final.write.format(\"parquet\")\\\n    .mode(\"append\")\\\n    .option(\"path\", destination_url)\\\n    .saveAsTable(\"glue_project.goldOBT\")\n\n\njob.commit()"
+}
